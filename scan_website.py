@@ -5,19 +5,23 @@ import sys
 import socket
 
 def scan_site(target_url):
-    # Validasi: Pastikan input adalah string
+    # Validasi ketat: Pastikan input adalah string
     if not isinstance(target_url, str):
-        print(f"Error: Input tidak valid. Diterima: {type(target_url)}, Diperlukan: str")
+        print(f"CRITICAL ERROR: Input bukan string. Tipe: {type(target_url)}")
+        print("Jalankan skrip dengan: python3 scan_website.py <domain>")
         return
 
-    # Bersihkan input dari karakter aneh jika ada
+    # Bersihkan input
     target_url = target_url.strip()
+    if not target_url:
+        print("Error: Domain kosong.")
+        return
 
-    # Menambahkan protokol jika tidak ada
+    # Tambahkan protokol jika belum ada
     if not target_url.startswith(('http://', 'https://')):
         target_url = 'https://' + target_url
 
-    # Ekstrak domain untuk resolusi IP
+    # Ekstrak domain
     domain = target_url.replace('http://', '').replace('https://', '').split('/')
     
     detected_cms = []
@@ -99,18 +103,18 @@ def scan_site(target_url):
         print(f"Terjadi kesalahan tak terduga: {e}")
 
 if __name__ == "__main__":
-    # Cek jumlah argumen
-    if len(sys.argv) < 2:
+    # Validasi jumlah argumen
+    if len(sys.argv) != 2:
         print("Penggunaan: python3 scan_website.py <alamat_website>")
         print("Contoh: python3 scan_website.py lemaanyilmedo.org")
         sys.exit(1)
     
-    # Ambil argumen pertama (index 1) dan pastikan itu string
-    # sys.argv adalah list, jadi kita ambil elemen ke-1
-    raw_target = sys.argv
+    # Ambil argumen secara eksplisit
+    target = sys.argv
     
-    # Jika user tidak sengaja memasukkan list (misal lewat IDE lain), kita ambil elemen pertama jika perlu
-    if isinstance(raw_target, list):
-        raw_target = raw_target
+    # Pastikan target adalah string (seharusnya sudah, tapi untuk keamanan)
+    if isinstance(target, list):
+        # Jika secara ajaib menjadi list, ambil elemen pertama
+        target = target
     
-    scan_site(raw_target)
+    scan_site(target)
