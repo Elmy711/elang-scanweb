@@ -5,10 +5,6 @@ import datetime
 
 def scan_web(url):
     try:
-        # Mengambil informasi waktu
-        waktu_sekarang = datetime.datetime.now()
-        print(f"Informasi Waktu: {waktu_sekarang}")
-
         # Mengambil informasi IP
         domain = url.replace("http://", "").replace("https://", "")
         ip_address = socket.gethostbyname(domain)
@@ -40,6 +36,16 @@ def scan_web(url):
                 break
         if not cms_detected:
             print("\nInformasi CMS: Tidak terdeteksi")
+
+        # Mengambil informasi Status Website
+        if response.status_code == 200:
+            print(f"\nInformasi Status Website: Online ({response.status_code})")
+        elif response.status_code == 404:
+            print(f"\nInformasi Status Website: Not Found ({response.status_code})")
+        elif response.status_code == 500:
+            print(f"\nInformasi Status Website: Internal Server Error ({response.status_code})")
+        else:
+            print(f"\nInformasi Status Website: {response.status_code}")
 
         # Mengambil informasi HTML
         soup = BeautifulSoup(response.text, 'html.parser')
