@@ -5,6 +5,14 @@ import sys
 import socket
 
 def scan_site(target_url):
+    # Validasi: Pastikan input adalah string
+    if not isinstance(target_url, str):
+        print(f"Error: Input tidak valid. Diterima: {type(target_url)}, Diperlukan: str")
+        return
+
+    # Bersihkan input dari karakter aneh jika ada
+    target_url = target_url.strip()
+
     # Menambahkan protokol jika tidak ada
     if not target_url.startswith(('http://', 'https://')):
         target_url = 'https://' + target_url
@@ -25,7 +33,6 @@ def scan_site(target_url):
         soup = BeautifulSoup(response.text, 'html.parser')
         
         # --- Deteksi Cloudflare ---
-        # Cek header 'Server', 'CF-RAY', atau cookie 'cf_clearance'
         server_header = response.headers.get('Server', '').lower()
         cf_ray = response.headers.get('CF-RAY')
         cf_cookie = response.cookies.get('cf_clearance')
@@ -92,10 +99,18 @@ def scan_site(target_url):
         print(f"Terjadi kesalahan tak terduga: {e}")
 
 if __name__ == "__main__":
+    # Cek jumlah argumen
     if len(sys.argv) < 2:
         print("Penggunaan: python3 scan_website.py <alamat_website>")
         print("Contoh: python3 scan_website.py lemaanyilmedo.org")
         sys.exit(1)
     
-    target = sys.argv
-    scan_site(target)
+    # Ambil argumen pertama (index 1) dan pastikan itu string
+    # sys.argv adalah list, jadi kita ambil elemen ke-1
+    raw_target = sys.argv
+    
+    # Jika user tidak sengaja memasukkan list (misal lewat IDE lain), kita ambil elemen pertama jika perlu
+    if isinstance(raw_target, list):
+        raw_target = raw_target
+    
+    scan_site(raw_target)
