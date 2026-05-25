@@ -70,5 +70,5 @@ def scan_web(url):
     except Exception as e:
         print(f"Error: {e}")
 
-url = input("URL: ")
+url = input("TARGET URL: ")
 scan_web(url)
