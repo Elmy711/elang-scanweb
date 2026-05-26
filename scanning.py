@@ -22,7 +22,7 @@ def scan_web(url):
         isp_info = ipapi.location(ip_address)
         print(f"ISP: {isp_info['org']}")
         # Mengambil informasi Status Website
-        response = requests.get(url)
+        response = requests.get(url, verify=True)
         if response.status_code == 200:
             print(f"Status: Online ({response.status_code})")
         elif response.status_code == 404:
@@ -75,5 +75,5 @@ def scan_web(url):
     except Exception as e:
         print(f"Error: {e}")
 
-url = input("TARGET URL: ")
+url = input("TARGET URL: ").encode('utf-8').decode('utf-8')
 scan_web(url)
